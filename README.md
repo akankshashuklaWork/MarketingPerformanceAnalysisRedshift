@@ -81,7 +81,6 @@ Checks include:
 * Row count validation
 * Data completeness
 
-![Data Profiling Pipeline](images/data_profiling_pipeline.png)
 
 ---
 
