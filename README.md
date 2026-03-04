@@ -48,7 +48,6 @@ Key responsibilities:
 * Load data into BigQuery staging tables
 * Prepare data for transformation
 
-![Orchestration Pipeline](images/orchestration_pipeline.png)
 
 ---
 
@@ -69,7 +68,6 @@ Example calculated metrics:
 * CPA (Cost per Acquisition)
 * ROAS (Return on Ad Spend)
 
-![Transformation Pipeline](images/transformation_pipeline.png)
 
 ---
 
@@ -79,7 +77,6 @@ Performs profiling to ensure data quality and validate loaded datasets.
 
 Checks include:
 
-* Null value analysis
 * Distribution checks
 * Row count validation
 * Data completeness
