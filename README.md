@@ -1,4 +1,4 @@
-# Marketing ELT Pipeline (Matillion + BigQuery + Amazon Redshift)
+# Marketing ELT Pipeline (Coupler.io + BigQuery + Matillion + Amazon Redshift)
 
 ## Project Overview
 
@@ -12,7 +12,7 @@ The goal of this project is to simulate a **production-style data pipeline** tha
 
 Data flows through the following architecture:
 
-Facebook Ads Data
+Facebook and google Ads Data
 ↓
 BigQuery (Staging Layer)
 ↓
@@ -28,7 +28,7 @@ Analytics / Reporting
 
 | Component           | Tool Used       |
 | ------------------- | --------------- |
-| Data Source         | Facebook Ads    |
+| Data Source         | Ads data using google spreadsheets  |
 | Staging Layer       | Google BigQuery |
 | ETL / Orchestration | Matillion       |
 | Data Warehouse      | Amazon Redshift |
