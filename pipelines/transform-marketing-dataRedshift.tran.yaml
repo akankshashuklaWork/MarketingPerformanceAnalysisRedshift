@@ -1,0 +1,93 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  metadata:
+    description: "Calculates marketing KPIs including CTR, conversion rate, and cost\
+      \ metrics"
+  components:
+    Calculation:
+      type: "calculator"
+      sources:
+      - "TransformMarketingDataRedshift"
+      parameters:
+        componentName: "Calculation"
+        includeInputColumns: "Yes"
+        calculations:
+        - - "CASE \nWHEN \"spend\" > 0 THEN (\"conversions\" * 50.0) / \"spend\" \n\
+            ELSE 0 \nEND\n"
+          - "ROAS"
+        - - "CASE \nWHEN \"conversions\" > 0 THEN \"spend\"::DOUBLE PRECISION / \"\
+            conversions\" \nELSE 0 \nEND\n"
+          - "CPA"
+        - - "CASE \nWHEN \"impressions\" > 0 THEN (\"clicks\" * 100.0) / \"impressions\"\
+            \ \nELSE 0 \nEND\n"
+          - "CTR"
+    dm_marketing_performance:
+      type: "table-output"
+      sources:
+      - "Calculation"
+      parameters:
+        componentName: "dm_marketing_performance"
+        schema: "[Environment Default]"
+        targetTable: "dm_marketing_performance"
+        fixDataTypeMismatches: "Yes"
+        columnMapping:
+        - - "date"
+          - "date"
+        - - "campaign"
+          - "campaign"
+        - - "datasource"
+          - "datasource"
+        - - "clicks"
+          - "clicks"
+        - - "impressions"
+          - "impressions"
+        - - "spend"
+          - "spend"
+        - - "conversions"
+          - "conversions"
+        - - "ctr"
+          - "ctr"
+        - - "cpa"
+          - "cpa"
+        - - "roas"
+          - "roas"
+        outputMode: "Truncate"
+        analyzeCompression: "No"
+      postProcessing:
+        updateOutputMessage: "success"
+        updateScalarVariables:
+    TransformMarketingDataRedshift:
+      type: "table-input"
+      parameters:
+        componentName: "TransformMarketingDataRedshift"
+        databaseRs: "[Environment Default]"
+        schema: "[Environment Default]"
+        targetTable: "staging_marketing_data_raw"
+        columnNames:
+        - "campaign"
+        - "clicks"
+        - "conversions"
+        - "datasource"
+        - "date"
+        - "impressions"
+        - "row_updated_at"
+        - "spend"
+        trimColumns: "No"
+design:
+  components:
+    Calculation:
+      position:
+        x: 160
+        "y": 0
+      tempMetlId: 2
+    dm_marketing_performance:
+      position:
+        x: 320
+        "y": 0
+      tempMetlId: 3
+    TransformMarketingDataRedshift:
+      position:
+        x: 0
+        "y": 0
+      tempMetlId: 1

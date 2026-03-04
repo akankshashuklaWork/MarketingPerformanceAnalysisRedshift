@@ -1,1 +1,71 @@
-
+type: "orchestration"
+version: "1.0"
+pipeline:
+  metadata:
+    description: "Loads marketing_raw table from BigQuery into Redshift staging table"
+  components:
+    Start:
+      type: "start"
+      transitions:
+        unconditional:
+        - "LoadMarketingDataRedshift"
+      parameters:
+        componentName: "Start"
+    LoadMarketingDataRedshift:
+      type: "google-bigquery"
+      transitions:
+        success:
+        - "Run Transformation"
+      skipped: false
+      parameters:
+        componentName: "LoadMarketingDataRedshift"
+        basicAdvancedMode: "Advanced"
+        authentication: "BigQueryOAuth"
+        projectId: "couplermarketing"
+        datasetId: "staging"
+        type: "Standard"
+        schema2: "[Environment Default]"
+        targetTable1: "staging_marketing_data_raw"
+        s3StagingArea1: "[Environment Default]"
+        distributionStyle: "Auto"
+        encryption: "None"
+        autoDebug: "Off"
+        sqlDialect: "Legacy"
+        sqlQuery: |-
+          SELECT
+            Row_Updated_At AS row_updated_at,
+            Date AS date,
+            Campaign AS campaign,
+            Datasource AS datasource,
+            Clicks AS clicks,
+            Impressions AS impressions,
+            Spend AS spend,
+            Conversions AS conversions
+          FROM couplermarketing.staging.marketing_raw;
+    Run Transformation:
+      type: "run-transformation"
+      parameters:
+        componentName: "Run Transformation"
+        transformationJob: "transform-marketing-dataRedshift.tran.yaml"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateOutputMessage:
+        updateScalarVariables:
+design:
+  components:
+    Start:
+      position:
+        x: 0
+        "y": 0
+      tempMetlId: 1
+    LoadMarketingDataRedshift:
+      position:
+        x: 160
+        "y": 0
+      tempMetlId: 2
+    Run Transformation:
+      position:
+        x: 320
+        "y": 0
+      tempMetlId: 3

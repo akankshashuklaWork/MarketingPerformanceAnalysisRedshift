@@ -1,0 +1,218 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  metadata:
+    description: "Data profiling for marketing tables - analyzes data quality, distributions,\
+      \ and validates metrics"
+  components:
+    Load Staging Raw:
+      type: "table-input"
+      parameters:
+        componentName: "Load Staging Raw"
+        databaseRs: "[Environment Default]"
+        schema: "[Environment Default]"
+        targetTable: "staging_marketing_data_raw"
+        columnNames:
+        - "row_updated_at"
+        - "date"
+        - "campaign"
+        - "datasource"
+        - "clicks"
+        - "impressions"
+        - "spend"
+        - "conversions"
+        trimColumns: "No"
+    Profile Staging Stats:
+      type: "aggregate"
+      sources:
+      - "Load Staging Raw"
+      parameters:
+        componentName: "Profile Staging Stats"
+        aggregations:
+        - - "clicks"
+          - "Count"
+        - - "clicks"
+          - "Count Distinct"
+        - - "clicks"
+          - "Min"
+        - - "clicks"
+          - "Max"
+        - - "clicks"
+          - "Average"
+        - - "clicks"
+          - "Standard Deviation - Sample"
+        - - "impressions"
+          - "Min"
+        - - "impressions"
+          - "Max"
+        - - "impressions"
+          - "Average"
+        - - "impressions"
+          - "Standard Deviation - Sample"
+        - - "spend"
+          - "Min"
+        - - "spend"
+          - "Max"
+        - - "spend"
+          - "Sum"
+        - - "spend"
+          - "Average"
+        - - "conversions"
+          - "Min"
+        - - "conversions"
+          - "Max"
+        - - "conversions"
+          - "Sum"
+        - - "conversions"
+          - "Average"
+        - - "campaign"
+          - "Count Distinct"
+        - - "datasource"
+          - "Count Distinct"
+    Load DM Performance:
+      type: "table-input"
+      parameters:
+        componentName: "Load DM Performance"
+        databaseRs: "[Environment Default]"
+        schema: "[Environment Default]"
+        targetTable: "dm_marketing_performance"
+        columnNames:
+        - "date"
+        - "campaign"
+        - "datasource"
+        - "clicks"
+        - "impressions"
+        - "spend"
+        - "conversions"
+        - "ctr"
+        - "cpa"
+        - "roas"
+        - "created_at"
+        trimColumns: "No"
+    Profile DM Stats:
+      type: "aggregate"
+      sources:
+      - "Load DM Performance"
+      parameters:
+        componentName: "Profile DM Stats"
+        aggregations:
+        - - "clicks"
+          - "Count"
+        - - "clicks"
+          - "Sum"
+        - - "clicks"
+          - "Min"
+        - - "clicks"
+          - "Max"
+        - - "clicks"
+          - "Average"
+        - - "impressions"
+          - "Sum"
+        - - "impressions"
+          - "Min"
+        - - "impressions"
+          - "Max"
+        - - "impressions"
+          - "Average"
+        - - "spend"
+          - "Sum"
+        - - "spend"
+          - "Min"
+        - - "spend"
+          - "Max"
+        - - "spend"
+          - "Average"
+        - - "conversions"
+          - "Sum"
+        - - "conversions"
+          - "Min"
+        - - "conversions"
+          - "Max"
+        - - "conversions"
+          - "Average"
+        - - "ctr"
+          - "Min"
+        - - "ctr"
+          - "Max"
+        - - "ctr"
+          - "Average"
+        - - "ctr"
+          - "Standard Deviation - Sample"
+        - - "cpa"
+          - "Min"
+        - - "cpa"
+          - "Max"
+        - - "cpa"
+          - "Average"
+        - - "cpa"
+          - "Standard Deviation - Sample"
+        - - "roas"
+          - "Min"
+        - - "roas"
+          - "Max"
+        - - "roas"
+          - "Average"
+        - - "roas"
+          - "Standard Deviation - Sample"
+        - - "campaign"
+          - "Count Distinct"
+        - - "datasource"
+          - "Count Distinct"
+    preformance_stats:
+      type: "rewrite-table-rs"
+      sources:
+      - "Profile DM Stats"
+      parameters:
+        componentName: "preformance_stats"
+        schema: "[Environment Default]"
+        targetTable: "performance_stats"
+        tableSortKey:
+        tableDistributionStyle: "Even"
+      postProcessing:
+        updateOutputMessage:
+        updateScalarVariables:
+    staging_stats:
+      type: "rewrite-table-rs"
+      sources:
+      - "Profile Staging Stats"
+      parameters:
+        componentName: "staging_stats"
+        schema: "[Environment Default]"
+        targetTable: "staging_stats"
+        tableSortKey:
+        tableDistributionStyle: "Even"
+      postProcessing:
+        updateOutputMessage:
+        updateScalarVariables:
+design:
+  components:
+    Profile DM Stats:
+      position:
+        x: -70
+        "y": 110
+      tempMetlId: 4
+    Profile Staging Stats:
+      position:
+        x: -70
+        "y": 0
+      tempMetlId: 2
+    Load Staging Raw:
+      position:
+        x: -230
+        "y": 0
+      tempMetlId: 1
+    Load DM Performance:
+      position:
+        x: -230
+        "y": 110
+      tempMetlId: 3
+    preformance_stats:
+      position:
+        x: 70
+        "y": 110
+      tempMetlId: 6
+    staging_stats:
+      position:
+        x: 60
+        "y": 0
+      tempMetlId: 5
