@@ -130,7 +130,7 @@ Fields include:
 CTR:
 
 ```
-CTR = clicks / impressions
+CTR = clicks * 100 / impressions
 ```
 
 CPA:
@@ -142,7 +142,7 @@ CPA = spend / conversions
 ROAS:
 
 ```
-ROAS = revenue / spend
+ROAS = conversions * 50 / spend
 ```
 
 ---
